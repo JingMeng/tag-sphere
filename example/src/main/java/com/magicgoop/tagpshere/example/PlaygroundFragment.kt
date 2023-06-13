@@ -18,6 +18,19 @@ import com.magicgoop.tagsphere.utils.EasingFunction
 import kotlinx.android.synthetic.main.fragment_playground.*
 import kotlin.random.Random
 
+
+/**
+ *
+ * NestedScrollView 啥也没干，甚至连一个id都没有
+ *
+ * 但是作为一个CoordinatorLayout的子类
+ *
+ * app:behavior_peekHeight="@dimen/sheet_peek"
+ * app:layout_behavior="@string/bottom_sheet_behavior"
+ *
+ * 实现了我们想要的那种效果，滴滴的第步滑动效果
+ * 在一半的时候也有判断
+ */
 class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListener {
 
     companion object {

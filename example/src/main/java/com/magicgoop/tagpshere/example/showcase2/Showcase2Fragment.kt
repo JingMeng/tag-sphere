@@ -23,6 +23,9 @@ class Showcase2Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        /**
+         * 使用起来很简单，自定义就可以满足了
+         */
         (0..250).map {
             DotTagItem(resources.getDimension(R.dimen.dot_radius_2))
         }.toList().let {
@@ -32,11 +35,19 @@ class Showcase2Fragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        /**
+         * 自动滚动的操作
+         */
         tagSphere1.startAutoRotation(-1f, 1f)
     }
 
+
     override fun onPause() {
         super.onPause()
+        /**
+         * 停止自动滚动，这个地方有必要调用吗？
+         * 因为 代码里面已经判断力，这个应该是有必要的，因为使用vp的时候，是不会调用view里面的那个的
+         */
         tagSphere1.stopAutoRotation()
     }
 }
