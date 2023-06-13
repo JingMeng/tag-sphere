@@ -3,6 +3,7 @@ package com.magicgoop.tagpshere.example
 import android.os.Bundle
 import android.text.TextPaint
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
@@ -61,6 +62,7 @@ class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListene
             }
         )
         (0..100).map {
+            //头像也仅仅是一个文字的展示
             TextTagItem(
                 text = String(
                     Character.toChars(EmojiConstants.emojiCodePoints[Random.nextInt(samples)])
@@ -71,6 +73,29 @@ class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListene
         }
         tagView.setOnLongPressedListener(this)
         tagView.setOnTagTapListener(this)
+
+
+        if (false) {
+            /**
+             * 事件的分发是从这里的
+             * [View.dispatchTouchEvent]
+             *
+             * 如果返回了true，就会导致onClick事件出现问题
+             * 如果返回 false ，没有响应--处于一种完全不能使用的状态
+             */
+            tagView.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    val multiplier = Random.nextInt(1, 5)
+                    tagView.startAutoRotation(
+                        Random.nextFloat() * multiplier,
+                        -Random.nextFloat() * multiplier
+                    )
+                } else {
+                    tagView.stopAutoRotation()
+                }
+                false
+            }
+        }
     }
 
     private fun initSettings() {
@@ -84,6 +109,18 @@ class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListene
                 tagView.setTouchSensitivity(progress + MIN_SENSITIVITY)
             }
         })
+
+        /**
+         * 这个做了一个互斥的操作
+         *
+         * 这个互斥的目的是，当触摸发生的时候，就不要在滚动了
+         *
+         *
+         * 允许在触摸时旋转球体
+         * Allow rotation sphere on touch
+         *
+         * 如果不执行 stopAutoRotation，就会出现触摸的时候还会继续旋转
+         */
         cbRotateOnTouch.setOnCheckedChangeListener { _, isChecked ->
             tagView.rotateOnTouch(isChecked)
             if (isChecked) {
@@ -91,6 +128,9 @@ class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListene
                 tagView.stopAutoRotation()
             }
         }
+        /**
+         * 自动滚动了
+         */
         cbAutoRotate.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 cbRotateOnTouch.isChecked = false

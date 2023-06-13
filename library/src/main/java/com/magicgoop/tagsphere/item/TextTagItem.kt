@@ -20,6 +20,9 @@ class TextTagItem(
         paint: TextPaint,
         easingFunction: ((t: Float) -> Float)?
     ) {
+        /**
+         * 首次需要测量一下
+         */
         if (!firstInit) {
             paint.getTextBounds(text, 0, text.length, rect)
             firstInit = true
