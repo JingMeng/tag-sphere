@@ -11,8 +11,10 @@ class ExampleFragmentPagerAdapter(
     fm: FragmentManager
 ) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
+    //    private val tabTitles =
+//        arrayOf("Playground", "Showcase1", "Showcase2", "Showcase3")
     private val tabTitles =
-        arrayOf("Playground", "Showcase1", "Showcase2", "Showcase3")
+        arrayOf("Playground")
 
     override fun getItem(position: Int): Fragment {
         return when (position) {

@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.graphics.*
 import android.os.Handler
 import android.text.TextPaint
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -14,6 +15,9 @@ import com.magicgoop.tagsphere.utils.EasingFunction
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
+
+
+const val TAG = "TagSphereViewDelegate"
 
 @SuppressLint("ClickableViewAccessibility")
 internal class TagSphereViewDelegate constructor(
@@ -35,6 +39,7 @@ internal class TagSphereViewDelegate constructor(
         set(value) {
             if (value in 1f..10f) {
                 field = value
+                //这个是之前的java一半不会这么写，java 如果写成set方法一般也是可以的
                 updateSphere()
             }
         }
@@ -81,8 +86,14 @@ internal class TagSphereViewDelegate constructor(
         override fun onDeltaChanged(deltaX: Float, deltaY: Float) {
             adapter.getTags().forEach { tag ->
                 tag.run {
+                    //默认这两个就是0
                     rotateY(deltaX * radians)
                     rotateX(deltaY * radians)
+                    /**
+                     * Projection 是投影的意思
+                     * updateProjectionX x轴方向的投影
+                     * updateProjectionY Y轴方向的投影
+                     */
                     updateProjectionX(width / 2f, radius, projectionDistance, padding.left)
                     updateProjectionY(height / 2f, radius, projectionDistance, padding.top)
                     maybeUpdateSphereRadius(getProjectionX(), getProjectionY())
@@ -135,11 +146,17 @@ internal class TagSphereViewDelegate constructor(
         padding.right = view.paddingRight
         padding.top = view.paddingTop
         padding.bottom = view.paddingBottom
+        //这几个可以不再去计算，因为我们一般不会设置padding
+
         this.width = view.width.toFloat() - padding.left - padding.right
         this.height = view.height.toFloat() - padding.top - padding.bottom
+        //这个计算也没有什么问题
         viewCenter.x = width / 2f + padding.left
         viewCenter.y = height / 2f + padding.top
+
+        //投影的距离选择一个小的
         projectionDistance = min(width, height)
+
         updateSphere()
     }
 
@@ -225,8 +242,18 @@ internal class TagSphereViewDelegate constructor(
     }
 
     private fun maybeUpdateSphereRadius(x: Float, y: Float) {
+        /**
+         * sphereRadius = Float.MIN_VALUE 初始值没有意义
+         *
+         * 这个就是一个球体的半径，这样整个就圆起来了
+         */
+        val temp = sphereRadius
         sphereRadius = max(sphereRadius, x - viewCenter.x)
         sphereRadius = max(sphereRadius, y - viewCenter.y)
+        Log.i(
+            TAG,
+            "==$temp=========$sphereRadius==========(x - viewCenter.x):${x - viewCenter.x}=======(y - viewCenter.y):${y - viewCenter.y}========="
+        )
     }
 
     private fun isInsideProjection(posX: Float, posY: Float): Boolean {
