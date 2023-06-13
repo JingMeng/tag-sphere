@@ -15,6 +15,9 @@ internal class TagAdapter {
         tagList.add(tagItem)
     }
 
+    /**
+     * recalculate 重新计算的意思
+     */
     private fun recalculate(i: Int, size: Int, tagItem: TagItem) {
         val offset: Float = 2f / size
         val increment = Math.PI * (3f - sqrt(5f))

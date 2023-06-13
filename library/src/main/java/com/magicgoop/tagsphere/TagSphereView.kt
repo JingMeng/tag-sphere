@@ -10,6 +10,12 @@ import com.magicgoop.tagsphere.TagSphereViewDelegate.Companion.DEFAULT_SENSITIVI
 import com.magicgoop.tagsphere.item.TagItem
 import com.magicgoop.tagsphere.utils.EasingFunction
 
+/**
+ *
+ * [android.widget.TextView]
+ *
+ * TagSphereView 没有重写 onMeasure方法，也就是意味着，他是全屏的，这个从xml里面也可以看的出来
+ */
 class TagSphereView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
@@ -20,6 +26,14 @@ class TagSphereView @JvmOverloads constructor(
         if (!isInEditMode) {
             setLayerType(LAYER_TYPE_HARDWARE, null)
         }
+        /**
+         *  我们之前一般都是按照下面的这个来书写的
+         *
+         *  TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SegmentTabLayout);
+         *
+         *
+         *  不过 TextView 的写法和下面的这个是一致的
+         */
         context.theme.obtainStyledAttributes(
             attrs, R.styleable.TagSphereView, 0, 0
         ).apply {
@@ -33,6 +47,7 @@ class TagSphereView @JvmOverloads constructor(
                     if (it >= 0) setEasingFunctionFromAttrs(it)
                 }
             } finally {
+                //强制回收
                 recycle()
             }
         }

@@ -143,6 +143,14 @@ internal class TagSphereViewDelegate constructor(
         updateSphere()
     }
 
+    /**
+     * 执行了view的分发方法，并没有太多的子view
+     *
+     * 也就是没有执行addView的这个操作
+     *
+     * 直接开始绘制的
+     * 也就是前面看到的没有onMeasure这个操作
+     */
     fun onDraw(canvas: Canvas) {
         adapter.getTags().forEach { tag ->
             val x = tag.getProjectionX()

@@ -1,5 +1,8 @@
 package com.magicgoop.tagsphere
 
+/**
+ * 自己写了一个收拾识处理的类
+ */
 interface OnGestureListener {
     fun cancel()
     fun onDeltaChanged(deltaX: Float, deltaY: Float)

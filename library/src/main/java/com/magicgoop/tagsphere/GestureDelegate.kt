@@ -20,6 +20,9 @@ internal class GestureDelegate(context: Context, private val gestureListener: On
     private var dx: Float = 0f
     private var dy: Float = 0f
 
+    /**
+     * 这个里面还有一套手势的识别
+     */
     private val singleTapGesture = GestureDetector(context, SingleTapGesture())
 
     init {
@@ -54,6 +57,7 @@ internal class GestureDelegate(context: Context, private val gestureListener: On
                 velocityTracker?.run { addMovement(ev) }
                 gestureListener.cancel()
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val x: Float = ev.x
                 val y: Float = ev.y
@@ -72,6 +76,7 @@ internal class GestureDelegate(context: Context, private val gestureListener: On
                     gestureListener.onDeltaChanged(dx, dy)
                 }
             }
+
             MotionEvent.ACTION_CANCEL -> {
                 velocityTracker?.run { recycle() }
                 velocityTracker = null
@@ -82,6 +87,7 @@ internal class GestureDelegate(context: Context, private val gestureListener: On
                     gestureListener.onDeltaChanged(dx, dy)
                 }
             }
+
             MotionEvent.ACTION_UP -> {
                 if (isDragging) {
                     dx = 0f

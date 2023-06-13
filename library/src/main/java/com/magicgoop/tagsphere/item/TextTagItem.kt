@@ -27,16 +27,18 @@ class TextTagItem(
             paint.getTextBounds(text, 0, text.length, rect)
             firstInit = true
         }
+        //透明度处理计算
         easingFunction?.let { calc ->
             val ease = calc(getEasingValue())
             val alpha = if (!ease.isNaN()) max(0, min(255, (255 * ease).roundToInt())) else 0
             paint.alpha = alpha
         } ?: run { paint.alpha = 255 }
+
         if (paint.alpha > 0) {
             canvas.drawText(
                 text,
                 x,
-                y + rect.height() / 2f - rect.bottom,
+                y - rect.bottom + rect.height() / 2f,
                 paint
             )
         }

@@ -32,7 +32,7 @@ import kotlin.random.Random
  * 实现了我们想要的那种效果，滴滴的第步滑动效果
  * 在一半的时候也有判断
  */
-class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListener {
+class PlaygroundFragment : Fragment() {
 
     companion object {
         fun newInstance(): PlaygroundFragment = PlaygroundFragment()
@@ -71,10 +71,33 @@ class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListene
         }.toList().let {
             tagView.addTagList(it)
         }
-        tagView.setOnLongPressedListener(this)
-        tagView.setOnTagTapListener(this)
+        tagView.setOnLongPressedListener(object : OnTagLongPressedListener {
+            override fun onLongPressed(tagItem: TagItem) {
+                Snackbar
+                    .make(
+                        root,
+                        "onLongPressed: " + (tagItem as TextTagItem).text,
+                        Snackbar.LENGTH_LONG
+                    )
+                    .setAction("Delete tag") { tagView.removeTag(tagItem) }
+                    .show()
+            }
+        })
+        tagView.setOnTagTapListener(object : OnTagTapListener {
+            override fun onTap(tagItem: TagItem) {
+                Snackbar
+                    .make(root, "onTap: " + (tagItem as TextTagItem).text, Snackbar.LENGTH_SHORT)
+                    .show()
+            }
+        })
 
 
+        /**
+         * 虽然是写的一个view，但是本质还是一个 ViewGroup
+         *
+         * 时间都再次分发到每一个tag上面去了
+         *
+         */
         if (false) {
             /**
              * 事件的分发是从这里的
@@ -99,6 +122,9 @@ class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListene
     }
 
     private fun initSettings() {
+        /**
+         * TagSphereView 没有重写 onMeasure方法，也就是意味着，他是全屏的，这个从xml里面也可以看的出来
+         */
         sbRadius.setOnSeekBarChangeListener(object : CustomOnSeekBarChangeListener() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 tagView.setRadius((progress + MIN_RADIUS) / 10f)
@@ -156,16 +182,5 @@ class PlaygroundFragment : Fragment(), OnTagLongPressedListener, OnTagTapListene
         }
     }
 
-    override fun onLongPressed(tagItem: TagItem) {
-        Snackbar
-            .make(root, "onLongPressed: " + (tagItem as TextTagItem).text, Snackbar.LENGTH_LONG)
-            .setAction("Delete tag") { tagView.removeTag(tagItem) }
-            .show()
-    }
 
-    override fun onTap(tagItem: TagItem) {
-        Snackbar
-            .make(root, "onTap: " + (tagItem as TextTagItem).text, Snackbar.LENGTH_SHORT)
-            .show()
-    }
 }
