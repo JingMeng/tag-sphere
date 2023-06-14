@@ -13,6 +13,7 @@ abstract class TagItem : Comparable<TagItem> {
     private val point: Point3d = Point3d(0f, 0f, 0f)
     private val projectionPoint = PointF()
 
+    //弧度
     fun rotateX(radians: Float) {
         val y = point.y
         point.y = ((y * cos(radians)) + (point.z * sin(radians) * -1.0f))
@@ -31,10 +32,37 @@ abstract class TagItem : Comparable<TagItem> {
         point.y = (x * sin(radians)) + (point.y * cos(radians))
     }
 
+    /**
+     *
+     *  updateProjectionX(width / 2f, radius, projectionDistance, padding.left)
+     *  projectionDistance = min(width, height)
+     *
+     *  xyOffset:width / 2f
+     *
+     *  zOffset:radius
+     *
+     *  distance:projectionDistance
+     *
+     *  padding:padding.left
+     *
+     */
     fun updateProjectionX(xyOffset: Float, zOffset: Float, distance: Float, padding: Int) {
         projectionPoint.x = ((distance * point.x) / (point.z - zOffset)) + xyOffset + padding
     }
 
+    /**
+     *
+     *  updateProjectionY(height / 2f, radius, projectionDistance, padding.top)
+     *
+     *  xyOffset:height / 2f
+     *
+     *  zOffset:radius
+     *
+     *  distance:projectionDistance
+     *
+     *  padding: padding.top
+     *
+     */
     fun updateProjectionY(xyOffset: Float, zOffset: Float, distance: Float, padding: Int) {
         projectionPoint.y = ((distance * point.y) / (point.z - zOffset)) + xyOffset + padding
     }

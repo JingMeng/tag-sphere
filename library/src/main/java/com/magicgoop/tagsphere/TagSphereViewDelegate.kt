@@ -68,6 +68,7 @@ internal class TagSphereViewDelegate constructor(
     private var onLongPressedListener: OnTagLongPressedListener? = null
     private var onTapListener: OnTagTapListener? = null
 
+    //弧度
     private var radians: Float = (Math.PI / 90f / sensitivity).toFloat()
     private var flingAnimator: ValueAnimator? = null
 
@@ -241,6 +242,22 @@ internal class TagSphereViewDelegate constructor(
         handler.removeCallbacksAndMessages(null)
     }
 
+    /**
+     * 通过数据观察，得到的
+     * ${height / 2f}和${width / 2f} 一定是不一样的，因为我们的手机屏幕从感官上也是不一样的
+     *
+     * 下面的数据是从一部手机上得到的 高度，宽度 和球形的半径
+     * 847.0==========540.0==================464.6786
+     * 从上面的数据可以发现并没有超过我们的最小宽度的一半，也就是宽度的一半
+     *
+     *
+     *   x 是投影到 x轴上的距离
+     *   y是投影到 y轴上的距离
+     *
+     *    x - viewCenter.x 是得到一个半径的距离
+     *    y - viewCenter.y 是得到一个半径的距离
+     *
+     */
     private fun maybeUpdateSphereRadius(x: Float, y: Float) {
         /**
          * sphereRadius = Float.MIN_VALUE 初始值没有意义
@@ -252,7 +269,7 @@ internal class TagSphereViewDelegate constructor(
         sphereRadius = max(sphereRadius, y - viewCenter.y)
         Log.i(
             TAG,
-            "==$temp=========$sphereRadius==========(x - viewCenter.x):${x - viewCenter.x}=======(y - viewCenter.y):${y - viewCenter.y}========="
+            "=====${height / 2f}==========${width / 2f}==================$temp=========$sphereRadius==========(x - viewCenter.x):${x - viewCenter.x}=======(y - viewCenter.y):${y - viewCenter.y}========="
         )
     }
 
