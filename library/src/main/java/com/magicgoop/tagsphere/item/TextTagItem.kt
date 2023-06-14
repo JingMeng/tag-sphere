@@ -7,6 +7,9 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/**
+ * 用绘制二维的方式绘制出来了三维立体的图形
+ */
 class TextTagItem(
     val text: String
 ) : TagItem() {
