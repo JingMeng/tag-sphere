@@ -17,6 +17,12 @@ internal class TagAdapter {
 
     /**
      * recalculate 重新计算的意思
+     *
+     *  从这个地方那个来看，这应该是一个单位圆形成的球体
+     *    val r = sqrt(1 - y.pow(2))
+     *   时候这个文章的算法
+     * https://blog.csdn.net/fanfan_hongyun/article/details/91415726
+     *
      */
     private fun recalculate(i: Int, size: Int, tagItem: TagItem) {
         val offset: Float = 2f / size
