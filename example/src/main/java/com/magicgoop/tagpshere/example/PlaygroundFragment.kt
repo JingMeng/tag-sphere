@@ -31,6 +31,10 @@ import kotlin.random.Random
  *
  * 实现了我们想要的那种效果，滴滴的第步滑动效果
  * 在一半的时候也有判断
+ *
+ * fixme  不在点击范围，因为view的宽高过大，也默认给你返回了一个最近的图标了，这个应该修改一下view的宽高
+ *
+ *  没有针对双指的操作，如果加上双指的操作，需要设置最大和最小的范围
  */
 class PlaygroundFragment : Fragment() {
 
@@ -131,6 +135,10 @@ class PlaygroundFragment : Fragment() {
          */
         sbRadius.setOnSeekBarChangeListener(object : CustomOnSeekBarChangeListener() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                /**
+                 * 球体的半径。值越大则半径越小。价值限制在 1f 到 10f
+                 * 因为这个参数做了一个被除数
+                 */
                 tagView.setRadius((progress + MIN_RADIUS) / 10f)
             }
         })
