@@ -97,6 +97,10 @@ class PlaygroundFragment : Fragment() {
          *
          * 时间都再次分发到每一个tag上面去了
          *
+         * 里面的本质就式写了这个方法
+         *   view.setOnTouchListener(this)
+         *   这个是一个单一的
+         *
          */
         if (false) {
             /**
@@ -149,10 +153,13 @@ class PlaygroundFragment : Fragment() {
          */
         cbRotateOnTouch.setOnCheckedChangeListener { _, isChecked ->
             tagView.rotateOnTouch(isChecked)
-            if (isChecked) {
-                cbAutoRotate.isChecked = false
-                tagView.stopAutoRotation()
-            }
+            /**
+             * 这部分注释掉，然后里面修改一下触摸事件的判断，以及添加触摸的处理就可以满足条件了
+             */
+//            if (isChecked) {
+//                cbAutoRotate.isChecked = false
+//                tagView.stopAutoRotation()
+//            }
         }
         /**
          * 自动滚动了

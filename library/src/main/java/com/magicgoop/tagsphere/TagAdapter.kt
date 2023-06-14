@@ -90,6 +90,13 @@ internal class TagAdapter {
     fun getTags(): MutableList<TagItem> = tagList
 
     fun getTagByProjectionPoint(x: Float, y: Float): TagItem? =
+        /**
+         * 这个是一个全局的过滤操作
+         * 被点击的首先要从前面
+         * 其次按照距离进行排序，获取哦最小的那一个
+         *
+         * 使用的投影来操作的，三维转二维比较计算
+         */
         tagList.filter { it.isTagInFront() }.minBy { it.projectionDistanceTo(x, y) }
 
 }

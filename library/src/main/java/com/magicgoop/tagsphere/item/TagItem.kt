@@ -90,6 +90,7 @@ abstract class TagItem : Comparable<TagItem> {
     fun projectionDistanceTo(toX: Float, toY: Float): Float {
         val dx = toX - projectionPoint.x
         val dy = toY - projectionPoint.y
+        //两点之间的距离
         return sqrt(dx * dx + dy * dy)
     }
 

@@ -8,10 +8,12 @@ import android.os.Handler
 import android.text.TextPaint
 import android.util.Log
 import android.view.MotionEvent
+import android.view.VelocityTracker
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.magicgoop.tagsphere.item.TagItem
 import com.magicgoop.tagsphere.utils.EasingFunction
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -129,6 +131,7 @@ internal class TagSphereViewDelegate constructor(
     private var padding: Rect = Rect()
 
     init {
+        //回调的就是 onTouch  这个方法
         view.setOnTouchListener(this)
         gestureDelegate = GestureDelegate(view.context, gestureListener)
     }
@@ -137,9 +140,56 @@ internal class TagSphereViewDelegate constructor(
         if (event != null && event.action and MotionEvent.ACTION_MASK == MotionEvent.ACTION_DOWN) {
             v?.parent?.requestDisallowInterceptTouchEvent(true)
         }
-        return if (rotateOnTouch)
+        event?.let {
+            processTouchEvent(event)
+        }
+        return if (rotateOnTouch) {
+            //可以修改一下，如果这个不消耗的话，执行那个滑动
             gestureDelegate.onTouchEvent(event)
-        else view.onTouchEvent(event)
+        } else {
+            //回调了view的默认的操作
+            view.onTouchEvent(event)
+            /**
+             * 无论如何都需要消耗一下再他这个范围的之内的点击事件的
+             *
+             * event?.let {
+             *       processTouchEvent(event)
+             *  }
+             *
+             *  类似于上面的代码，如果按照默认的代码业务逻辑处理 view.onTouchEvent(event)不接收事件
+             *  只能处理一个 ACTION_DOWN 事件，后续的事件就无法继续执行了
+             */
+            true
+        }
+    }
+
+    @Volatile
+    var isTouch = false
+    private fun processTouchEvent(ev: MotionEvent) {
+        val action = ev.action
+        //and MotionEvent.ACTION_MASK
+        Log.i(TAG, "---processTouchEvent---------$action-------")
+        when (action) {
+            MotionEvent.ACTION_DOWN -> {
+                isTouch = true
+                Log.i(TAG, "---processTouchEvent---------ACTION_DOWN-------")
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                isTouch = true
+                Log.i(TAG, "---processTouchEvent---------ACTION_MOVE-------")
+            }
+
+            MotionEvent.ACTION_CANCEL -> {
+                isTouch = false
+                Log.i(TAG, "---processTouchEvent---------ACTION_CANCEL-------")
+            }
+
+            MotionEvent.ACTION_UP -> {
+                isTouch = false
+                Log.i(TAG, "---processTouchEvent---------ACTION_UP-------")
+            }
+        }
     }
 
     fun updateViewSize() {
@@ -227,11 +277,18 @@ internal class TagSphereViewDelegate constructor(
         flingAnimator?.cancel()
     }
 
+    /**
+     * 这个就是自动的默认的旋转动画
+     */
     fun startAnimation(deltaX: Float, deltaY: Float) {
         val delay = 1000 / 60L
         handler.postDelayed(object : Runnable {
             override fun run() {
-                gestureListener.onDeltaChanged(deltaX, -deltaY)
+                //现在在触摸状态的话就直接忽略吧
+//                Log.i(TAG, "----startAnimation-----------${isTouch}---")
+                if (!isTouch) {
+                    gestureListener.onDeltaChanged(deltaX, -deltaY)
+                }
                 handler.postDelayed(this, delay)
             }
 
@@ -267,10 +324,10 @@ internal class TagSphereViewDelegate constructor(
         val temp = sphereRadius
         sphereRadius = max(sphereRadius, x - viewCenter.x)
         sphereRadius = max(sphereRadius, y - viewCenter.y)
-        Log.i(
-            TAG,
-            "=====${height / 2f}==========${width / 2f}==================$temp=========$sphereRadius==========(x - viewCenter.x):${x - viewCenter.x}=======(y - viewCenter.y):${y - viewCenter.y}========="
-        )
+//        Log.i(
+//            TAG,
+//            "=====${height / 2f}==========${width / 2f}==================$temp=========$sphereRadius==========(x - viewCenter.x):${x - viewCenter.x}=======(y - viewCenter.y):${y - viewCenter.y}========="
+//        )
     }
 
     private fun isInsideProjection(posX: Float, posY: Float): Boolean {
